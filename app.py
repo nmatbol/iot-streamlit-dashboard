@@ -1,6 +1,7 @@
 import streamlit as st
 from influxdb_client import InfluxDBClient
 import pandas as pd
+import plotly.express as px
 
 # =====================================
 # CONFIGURACIÓN DE LA PÁGINA
@@ -38,8 +39,20 @@ bucket = st.secrets["INFLUX_BUCKET"]
 
 periodo = st.sidebar.selectbox(
     "Periodo",
-    ["24h", "7d", "30d"],
-    index=0
+    [
+        "30m",
+        "1h",
+        "3h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d",
+        "90d",
+        "180d"
+    ],
+    index=5
 )
 
 # =====================================
@@ -74,11 +87,22 @@ try:
         # =====================================
 
         temperatura_actual = round(
-            float(df["Temperatura"].iloc[-1]),
-            1
+            float(df["Temperatura"].iloc[-1]), 1
         )
 
-        col1, col2, col3 = st.columns(3)
+        temperatura_max = round(
+            float(df["Temperatura"].max()), 1
+        )
+
+        temperatura_min = round(
+            float(df["Temperatura"].min()), 1
+        )
+
+        temperatura_media = round(
+            float(df["Temperatura"].mean()), 1
+        )
+
+        col1, col2, col3, col4 = st.columns(4)
 
         with col1:
             st.metric(
@@ -86,14 +110,49 @@ try:
                 f"{temperatura_actual} °C"
             )
 
+        with col2:
+            st.metric(
+                "Máxima",
+                f"{temperatura_max} °C"
+            )
+
+        with col3:
+            st.metric(
+                "Mínima",
+                f"{temperatura_min} °C"
+            )
+
+        with col4:
+            st.metric(
+                "Media",
+                f"{temperatura_media} °C"
+            )
+
+        st.divider()
+
         # =====================================
         # GRÁFICA
         # =====================================
 
         st.subheader("Evolución de la temperatura")
 
-        st.line_chart(
-            df.set_index("Fecha")
+        fig_temp = px.line(
+            df,
+            x="Fecha",
+            y="Temperatura"
+        )
+
+        fig_temp.update_layout(
+            template="plotly_dark",
+            height=450,
+            margin=dict(l=20, r=20, t=30, b=20),
+            xaxis_title="",
+            yaxis_title="°C"
+        )
+
+        st.plotly_chart(
+            fig_temp,
+            use_container_width=True
         )
 
         # =====================================
