@@ -38,7 +38,7 @@ bucket = st.secrets["INFLUX_BUCKET"]
 
 periodo = st.sidebar.selectbox(
     "Periodo",
-    ["24h", "7d", "30d"]
+    ["24h", "7d", "30d"],
     index=0
 )
 
