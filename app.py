@@ -367,7 +367,7 @@ try:
 
         with col_light:
 
-            st.subheader("💡 Intensidad de la luz")
+            st.subheader("Intensidad de la luz")
 
             if not df_light.empty:
 
@@ -383,7 +383,9 @@ try:
 
         st.divider()
 
-        col_wind, col_dir = st.columns(2)
+        #col_wind, col_dir = st.columns(2)
+
+        col_wind = st.columns(1)
 
         with col_wind:
 
@@ -396,9 +398,9 @@ try:
 
                 st.plotly_chart(fig_wind, use_container_width=True)
 
-         with col_dir:
+#         with col_dir:
 
-            st.subheader("Dirección del viento")
+#            st.subheader("Dirección del viento")
 
 #            if not df_dir.empty:
 
