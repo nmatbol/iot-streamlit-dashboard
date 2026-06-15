@@ -105,28 +105,24 @@ try:
         df_light = df_light[["_time", "_value"]]
         df_light.columns = ["Fecha", "Intensidad de la Luz"]
 
-#        df_wind = df_wind[["_time", "_value"]]
-#        df_wind.columns = ["Fecha", "Viento"]
+        # =====================================
+        # DIRECCIÓN DEL VIENTO
+        # =====================================
 
-#        df_dir = df_dir[["_value"]]
-#        df_dir.columns = ["Direccion"]
-
-#        dir_counts = df_dir["Direccion"].value_counts().reset_index()
-#        dir_counts.columns = ["Direccion", "Count"]
+        df_wind = df_wind[["_time", "_value"]]
+        df_wind.columns = ["Fecha", "Direccion"]
 
         # Convertir grados → sectores
         df_wind["Sector"] = df_wind["Direccion"].apply(wind_deg_to_dir)
 
-        wind_counts = df_wind["Sector"].value_counts().reset_index()
-        wind_counts.columns = ["Direccion", "Frecuencia"]
+        wind_counts = (df_wind.groupby("Sector").size().reset_index(name="Frecuencia"))
 
-        # Orden correcto para rosa de vientos
-        order = ["N","NE","E","SE","S","SW","W","NW"]
-        wind_counts["Direccion"] = pd.Categorical(
-            wind_counts["Direccion"],
-            categories=order,
-            ordered=True
-        )
+        wind_counts.rename(columns={"Sector": "Direccion"}, inplace=True)
+
+        order = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] # Orden para la rosa de los vientos
+
+        wind_counts["Direccion"] = pd.Categorical(wind_counts["Direccion"], categories=order, ordered=True)
+
         wind_counts = wind_counts.sort_values("Direccion")
 
         # =====================================
@@ -209,20 +205,14 @@ try:
         # =====================================
         # GRÁFICAS VIENTO
         # =====================================
+        st.subheader("Dirección del viento (grados)")
 
-#        col_wind, col_dir = st.columns(2)
+        fig_wind = px.line(df_wind, x="Fecha", y="Direccion")
 
-        col_wind = st.columns(1)
+        fig_wind.update_layout(template="plotly_dark", height=350)
 
-        with col_wind:
-            st.subheader("Velocidad del viento")
-            fig = px.line(df_wind, x="Fecha", y="Viento")
-            st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig_wind, use_container_width=True)
 
-#        with col_dir:
-#            st.subheader("Dirección del viento")
-#            fig = px.pie(dir_counts, names="Direccion", values="Count")
-#            st.plotly_chart(fig, use_container_width=True)
 
         # =====================================
         # ROSA DE LOS VIENTOS
