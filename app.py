@@ -265,7 +265,7 @@ try:
 
         with st.expander("Ver datos de Temperatura"):
             st.dataframe(
-                df.sort_values(
+                df_temp.sort_values(
                     by="Fecha",
                     ascending=False
                 ),
