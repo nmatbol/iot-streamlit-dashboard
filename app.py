@@ -104,19 +104,19 @@ try:
         # =====================================
 
         temperatura_actual = round(
-            float(df["Temperatura"].iloc[-1]), 1
+            float(df_temp["Temperatura"].iloc[-1]), 1
         )
 
         temperatura_max = round(
-            float(df["Temperatura"].max()), 1
+            float(df_temp["Temperatura"].max()), 1
         )
 
         temperatura_min = round(
-            float(df["Temperatura"].min()), 1
+            float(df_temp["Temperatura"].min()), 1
         )
 
         temperatura_media = round(
-            float(df["Temperatura"].mean()), 1
+            float(df_temp["Temperatura"].mean()), 1
         )
 
         # =====================================
