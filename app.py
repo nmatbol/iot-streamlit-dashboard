@@ -8,21 +8,16 @@ import plotly.express as px
 # =====================================
 
 st.set_page_config(
-    page_title="Estación Meteorológica Albufera",
+    page_title="Albufera Weather Station",
     layout="wide"
 )
 
-st.title("Dashboard Albufera Weather Station")
+st.title("Estación Meteorológica Albufera")
 st.markdown("Datos almacenados en InfluxDB Cloud")
 
 # =====================================
 # CONFIGURACIÓN INFLUXDB CLOUD
 # =====================================
-
-#INFLUX_URL = "https://eu-central-1-1.aws.cloud2.influxdata.com/"
-#INFLUX_TOKEN = "hg475TtMSOO4U7dQVWIbijmK-1JFpfbhxUtmuS6QS4v-H3xNZ21k6XnEukiTVfzGNF4GZBVRvpvlR0cEqAofKg=="
-#INFLUX_ORG = "UPV"
-#INFLUX_BUCKET = "albuferaws"
 
 client = InfluxDBClient(
     url=st.secrets["INFLUX_URL"],
@@ -38,7 +33,7 @@ bucket = st.secrets["INFLUX_BUCKET"]
 # =====================================
 
 periodo = st.sidebar.selectbox(
-    "Periodo",
+    "Periodo de tiempo",
     [
         "30m",
         "1h",
@@ -55,35 +50,57 @@ periodo = st.sidebar.selectbox(
     index=5
 )
 
-# =====================================
-# QUERY TEMPERATURA
-# =====================================
-
-query = f'''
-from(bucket: "{bucket}")
-  |> range(start: -{periodo})
-  |> filter(fn: (r) => r._measurement == "weather_station")
-  |> filter(fn: (r) => r._field == "temperature")
-  |> sort(columns: ["_time"])
-'''
-
 try:
+    # =====================================
+    # QUERY TEMPERATURA
+    # =====================================
 
-    df = query_api.query_data_frame(query)
+    query_temp = f'''
+    from(bucket: "{bucket}")
+      |> range(start: -{periodo})
+      |> filter(fn: (r) => r._measurement == "weather_station")
+      |> filter(fn: (r) => r._field == "temperature")
+      |> sort(columns: ["_time"])
+    '''
+
+    df_temp = query_api.query_data_frame(query_temp)
 
     # Si Influx devuelve varios DataFrames, los unimos
-    if isinstance(df, list):
-        df = pd.concat(df, ignore_index=True)
+    if isinstance(df_temp, list):
+        df_temp = pd.concat(df_temp, ignore_index=True)
 
-    if not df.empty:
+    # =====================================
+    # QUERY HUMEDAD
+    # =====================================
+
+    query_hum = f'''
+    from(bucket: "{bucket}")
+      |> range(start: -{periodo})
+      |> filter(fn: (r) => r._measurement == "weather_station")
+      |> filter(fn: (r) => r._field == "humidity")
+      |> sort(columns: ["_time"])
+    '''
+
+    df_hum = query_api.query_data_frame(query_hum)
+
+    if isinstance(df_hum, list):
+        df_hum = pd.concat(df_hum, ignore_index=True)
+
+    # =====================================
+    # COMPROBAR DATOS
+    # =====================================
+
+    if not df_temp.empty and not df_hum.empty:
 
         # Seleccionamos solo columnas útiles
-        df = df[["_time", "_value"]]
+        df_temp = df_temp[["_time", "_value"]]
+        df_temp.columns = ["Fecha", "Temperatura"]
 
-        df.columns = ["Fecha", "Temperatura"]
+        df_hum = df_hum[["_time", "_value"]]
+        df_hum.columns = ["Fecha", "Humedad"]
 
         # =====================================
-        # MÉTRICA ACTUAL
+        # MÉTRICAS TEMPERATURA
         # =====================================
 
         temperatura_actual = round(
@@ -102,11 +119,37 @@ try:
             float(df["Temperatura"].mean()), 1
         )
 
+        # =====================================
+        # MÉTRICAS HUMEDAD
+        # =====================================
+
+        humedad_actual = round(
+            float(df_hum["Humedad"].iloc[-1]), 1
+        )
+
+        humedad_max = round(
+            float(df_hum["Humedad"].max()), 1
+        )
+
+        humedad_min = round(
+            float(df_hum["Humedad"].min()), 1
+        )
+
+        humedad_media = round(
+            float(df_hum["Humedad"].mean()), 1
+        )
+
+        # =====================================
+        # KPIs TEMPERATURA
+        # =====================================
+
+        st.subheader("emperatura")
+
         col1, col2, col3, col4 = st.columns(4)
 
         with col1:
             st.metric(
-                "Temperatura actual",
+                "Actual",
                 f"{temperatura_actual} °C"
             )
 
@@ -128,40 +171,110 @@ try:
                 f"{temperatura_media} °C"
             )
 
+        # =====================================
+        # KPIs HUMEDAD
+        # =====================================
+
+        st.subheader("Humedad)
+
+        col5, col6, col7, col8 = st.columns(4)
+
+        with col5:
+            st.metric(
+                "Actual",
+                f"{humedad_actual} % RH"
+            )
+
+        with col6:
+            st.metric(
+                "Máxima",
+                f"{humedad_max} % RH"
+            )
+
+        with col7:
+            st.metric(
+                "Mínima",
+                f"{humedad_min} % RH"
+            )
+
+        with col8:
+            st.metric(
+                "Media",
+                f"{humedad_media} % RH"
+            )
+
         st.divider()
 
         # =====================================
-        # GRÁFICA
+        # GRÁFICAS
         # =====================================
 
-        st.subheader("Evolución de la temperatura")
+        col_temp, col_hum = st.columns(2)
 
-        fig_temp = px.line(
-            df,
-            x="Fecha",
-            y="Temperatura"
-        )
+        with col_temp:
 
-        fig_temp.update_layout(
-            template="plotly_dark",
-            height=450,
-            margin=dict(l=20, r=20, t=30, b=20),
-            xaxis_title="",
-            yaxis_title="°C"
-        )
+            st.subheader("Evolución de la temperatura")
 
-        st.plotly_chart(
-            fig_temp,
-            use_container_width=True
-        )
+            fig_temp = px.line(
+                df_temp,
+                x="Fecha",
+                y="Temperatura"
+            )
+
+            fig_temp.update_layout(
+                template="plotly_dark",
+                height=450,
+                margin=dict(l=20, r=20, t=30, b=20),
+                xaxis_title="",
+                yaxis_title="°C"
+            )
+
+            st.plotly_chart(
+                fig_temp,
+                use_container_width=True
+            )
+
+        with col_hum:
+
+            st.subheader("Evolución de la humedad")
+
+            fig_hum = px.line(
+                df_hum,
+                x="Fecha",
+                y="Humedad"
+            )
+
+            fig_hum.update_layout(
+                template="plotly_dark",
+                height=450,
+                margin=dict(l=20, r=20, t=30, b=20),
+                xaxis_title="",
+                yaxis_title="% RH"
+            )
+
+            st.plotly_chart(
+                fig_hum,
+                use_container_width=True
+            )
+
+
 
         # =====================================
         # TABLA
         # =====================================
 
-        with st.expander("Ver datos"):
+        with st.expander("Ver datos de Temperatura"):
             st.dataframe(
                 df.sort_values(
+                    by="Fecha",
+                    ascending=False
+                ),
+                use_container_width=True
+            )
+
+        with st.expander("Ver datos de Humedad"):
+            st.dataframe(
+                df_hum.sort_values(
                     by="Fecha",
                     ascending=False
                 ),
