@@ -169,7 +169,6 @@ try:
         df_hum = df_hum[["_time", "_value"]]
         df_hum.columns = ["Fecha", "Humedad"]
 
-
         df_uv = df_uv[["_time", "_value"]]
         df_uv.columns = ["Fecha", "Índice UV"]
 
@@ -366,7 +365,7 @@ try:
 
                 st.plotly_chart(fig_uv, use_container_width=True)
 
-        with col_linght:
+        with col_light:
 
             st.subheader("💡 Intensidad de la luz")
 
