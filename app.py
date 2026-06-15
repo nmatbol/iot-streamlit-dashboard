@@ -158,8 +158,8 @@ try:
 
         col9.metric("Actual", f"{presion_actual} hPa")
         col10.metric("Máxima", f"{df_pressure['Presión'].max():.1f} hPa")
-        col11.metric("Mínima", f"{df_presure['Presión'].min():.1f} hPa")
-        col12.metric("Media", f"{df_presure['Presión'].mean():.1f} hPa")
+        col11.metric("Mínima", f"{df_pressure['Presión'].min():.1f} hPa")
+        col12.metric("Media", f"{df_pressure['Presión'].mean():.1f} hPa")
 
         st.divider()
 
