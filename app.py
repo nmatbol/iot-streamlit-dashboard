@@ -2,6 +2,7 @@ import streamlit as st
 from influxdb_client import InfluxDBClient
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 # =====================================
 # CONFIGURACIÓN DE LA PÁGINA
@@ -38,6 +39,26 @@ periodo = st.sidebar.selectbox(
     index=5
 )
 
+def wind_deg_to_dir(deg):
+    if pd.isna(deg):
+        return None
+    if deg < 22.5 or deg >= 337.5:
+        return "N"
+    elif deg < 67.5:
+        return "NE"
+    elif deg < 112.5:
+        return "E"
+    elif deg < 157.5:
+        return "SE"
+    elif deg < 202.5:
+        return "S"
+    elif deg < 247.5:
+        return "SW"
+    elif deg < 292.5:
+        return "W"
+    else:
+        return "NW"
+
 try:
     def run_query(field):
         # =====================================
@@ -61,15 +82,15 @@ try:
     df_hum = run_query("humidity")
     df_uv = run_query("uv")
     df_light = run_query("light")
-    df_wind = run_query("wind_speed")
-    df_dir = run_query("wind_direction")
+    df_wind = run_query("wind_direction")
+    #df_dir = run_query("wind_direction")
 
 
     # =====================================
     # COMPROBAR DATOS
     # =====================================
 
-    if (not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty and not df_wind.empty and not df_dir.empty):
+    if (not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty and not df_wind.empty):
 
         # Seleccionamos solo columnas útiles
         df_temp = df_temp[["_time", "_value"]]
@@ -84,14 +105,29 @@ try:
         df_light = df_light[["_time", "_value"]]
         df_light.columns = ["Fecha", "Intensidad de la Luz"]
 
-        df_wind = df_wind[["_time", "_value"]]
-        df_wind.columns = ["Fecha", "Viento"]
+#        df_wind = df_wind[["_time", "_value"]]
+#        df_wind.columns = ["Fecha", "Viento"]
 
-        df_dir = df_dir[["_value"]]
-        df_dir.columns = ["Direccion"]
+#        df_dir = df_dir[["_value"]]
+#        df_dir.columns = ["Direccion"]
 
-        dir_counts = df_dir["Direccion"].value_counts().reset_index()
-        dir_counts.columns = ["Direccion", "Count"]
+#        dir_counts = df_dir["Direccion"].value_counts().reset_index()
+#        dir_counts.columns = ["Direccion", "Count"]
+
+        # Convertir grados → sectores
+        df_wind["Sector"] = df_wind["Direccion"].apply(wind_deg_to_dir)
+
+        wind_counts = df_wind["Sector"].value_counts().reset_index()
+        wind_counts.columns = ["Direccion", "Frecuencia"]
+
+        # Orden correcto para rosa de vientos
+        order = ["N","NE","E","SE","S","SW","W","NW"]
+        wind_counts["Direccion"] = pd.Categorical(
+            wind_counts["Direccion"],
+            categories=order,
+            ordered=True
+        )
+        wind_counts = wind_counts.sort_values("Direccion")
 
         # =====================================
         # MÉTRICA
@@ -174,17 +210,45 @@ try:
         # GRÁFICAS VIENTO
         # =====================================
 
-        col_wind, col_dir = st.columns(2)
+#        col_wind, col_dir = st.columns(2)
+
+        col_wind = st.columns(1)
 
         with col_wind:
             st.subheader("Velocidad del viento")
             fig = px.line(df_wind, x="Fecha", y="Viento")
             st.plotly_chart(fig, use_container_width=True)
 
-        with col_dir:
-            st.subheader("Dirección del viento")
-            fig = px.pie(dir_counts, names="Direccion", values="Count")
-            st.plotly_chart(fig, use_container_width=True)
+#        with col_dir:
+#            st.subheader("Dirección del viento")
+#            fig = px.pie(dir_counts, names="Direccion", values="Count")
+#            st.plotly_chart(fig, use_container_width=True)
+
+        # =====================================
+        # ROSA DE LOS VIENTOS
+        # =====================================
+
+        st.subheader("Rosa de los vientos")
+
+        fig = go.Figure()
+
+        fig.add_trace(go.Barpolar(
+            r=wind_counts["Frecuencia"],
+            theta=wind_counts["Direccion"],
+            name="Viento",
+            marker_color="deepskyblue"
+        ))
+
+        fig.update_layout(
+            template="plotly_dark",
+            polar=dict(
+                angularaxis=dict(direction="clockwise"),
+                radialaxis=dict(showticklabels=True)
+            ),
+            showlegend=False
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
 
     else:
         st.warning("No hay datos disponibles para el periodo seleccionado.")
