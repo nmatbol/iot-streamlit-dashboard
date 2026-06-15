@@ -175,7 +175,7 @@ try:
         # KPIs HUMEDAD
         # =====================================
 
-        st.subheader("Humedad)"
+        st.subheader("Humedad")
 
         col5, col6, col7, col8 = st.columns(4)
 
