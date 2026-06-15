@@ -87,10 +87,45 @@ try:
         df_hum = pd.concat(df_hum, ignore_index=True)
 
     # =====================================
+    # QUERY UV
+    # =====================================
+
+    query_uv = f'''
+    from(bucket: "{bucket}")
+      |> range(start: -{periodo})
+      |> filter(fn: (r) => r._measurement == "weather_station")
+      |> filter(fn: (r) => r._field == "uv_index")
+      |> sort(columns: ["_time"])
+    '''
+
+    df_uv = query_api.query_data_frame(query_uv)
+    if isinstance(df_uv, list):
+        df_uv = pd.concat(df_uv, ignore_index=True)
+
+    # =====================================
+    # QUERY INTENSIDAD DE LA LUZ
+    # =====================================
+
+    query_light = f'''
+    from(bucket: "{bucket}")
+      |> range(start: -{periodo})
+      |> filter(fn: (r) => r._measurement == "weather_station")
+      |> filter(fn: (r) => r._field == "light")
+      |> sort(columns: ["_time"])
+    '''
+
+    df_light = query_api.query_data_frame(query_light)
+    if isinstance(df_light, list):
+        df_light = pd.concat(df_light, ignore_index=True)
+
+
+
+
+    # =====================================
     # COMPROBAR DATOS
     # =====================================
 
-    if not df_temp.empty and not df_hum.empty:
+    if not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty:
 
         # Seleccionamos solo columnas útiles
         df_temp = df_temp[["_time", "_value"]]
@@ -98,6 +133,13 @@ try:
 
         df_hum = df_hum[["_time", "_value"]]
         df_hum.columns = ["Fecha", "Humedad"]
+
+
+        df_uv = df_uv[["_time", "_value"]]
+        df_uv.columns = ["Fecha", "Índice UV"]
+
+        df_light = df_light[["_time", "_value"]]
+        df_light.columns = ["Fecha", "Intensidad de la Luz"]
 
         # =====================================
         # MÉTRICAS TEMPERATURA
