@@ -84,13 +84,14 @@ try:
     df_light = run_query("light")
     df_wind = run_query("wind_direction")
     #df_dir = run_query("wind_direction")
+    df_pressure = run_query("pressure")
 
 
     # =====================================
     # COMPROBAR DATOS
     # =====================================
 
-    if (not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty and not df_wind.empty):
+    if (not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty and not df_wind.empty not df_pressure.empty):
 
         # Seleccionamos solo columnas útiles
         df_temp = df_temp[["_time", "_value"]]
@@ -104,6 +105,9 @@ try:
 
         df_light = df_light[["_time", "_value"]]
         df_light.columns = ["Fecha", "Intensidad de la Luz"]
+
+        df_pressure = df_pressure[["_time", "_value"]]
+        df_pressure.columns = ["Fecha", "Presión"]
 
         # =====================================
         # DIRECCIÓN DEL VIENTO
@@ -131,6 +135,7 @@ try:
 
         temperatura_actual = round(float(df_temp["Temperatura"].iloc[-1]), 1)
         humedad_actual = round(float(df_hum["Humedad"].iloc[-1]), 1)
+        presion_actual = round(float(df_pressure["Presión"].iloc[-1]), 1)
 
         st.subheader("Temperatura")
         col1, col2, col3, col4 = st.columns(4)
@@ -147,6 +152,14 @@ try:
         col6.metric("Máxima", f"{df_hum['Humedad'].max():.1f} % RH")
         col7.metric("Mínima", f"{df_hum['Humedad'].min():.1f} % RH")
         col8.metric("Media", f"{df_hum['Humedad'].mean():.1f} % RH")
+
+        st.subheader("Presión atmosférica")
+        col9, col10, col11, col12 = st.columns(4)
+
+        col9.metric("Actual", f"{presion_actual} hPa")
+        col10.metric("Máxima", f"{df_pressure['Presión'].max():.1f} hPa")
+        col11.metric("Mínima", f"{df_presure['Presión'].min():.1f} hPa")
+        col12.metric("Media", f"{df_presure['Presión'].mean() hPa")
 
         st.divider()
 
@@ -203,7 +216,7 @@ try:
 
         st.divider()
         # =====================================
-        # GRÁFICAS VIENTO
+        # GRÁFICA VIENTO
         # =====================================
         st.subheader("Dirección del viento (grados)")
 
@@ -222,23 +235,29 @@ try:
 
         fig = go.Figure()
 
-        fig.add_trace(go.Barpolar(
-            r=wind_counts["Frecuencia"],
-            theta=wind_counts["Direccion"],
-            name="Viento",
-            marker_color="deepskyblue"
-        ))
+        fig.add_trace(go.Barpolar(r=wind_counts["Frecuencia"], theta=wind_counts["Direccion"], name="Viento", marker_color="deepskyblue"))
 
-        fig.update_layout(
-            template="plotly_dark",
-            polar=dict(
-                angularaxis=dict(direction="clockwise"),
-                radialaxis=dict(showticklabels=True)
-            ),
-            showlegend=False
-        )
+        fig.update_layout(template="plotly_dark", polar=dict(angularaxis=dict(direction="clockwise"),radialaxis=dict(showticklabels=True)), showlegend=False)
 
         st.plotly_chart(fig, use_container_width=True)
+
+        st.divider()
+
+        # =====================================
+        # GRÁFICA PRESIÓN
+        # =====================================
+        st.subheader("Presión atmosférica")
+
+        fig_pressure = px.line(df_pressure, x="Fecha", y="Presión")
+
+        fig_pressure.update_layout(template="plotly_dark", height=400, yaxis_title="hPa", xaxis_title="")
+
+        fig_pressure.add_hline(y=1013.25, line_dash="dash", annotation_text="Presión estándar")
+
+        st.plotly_chart(fig_pressure, use_container_width=True)
+
+
+
 
     else:
         st.warning("No hay datos disponibles para el periodo seleccionado.")
