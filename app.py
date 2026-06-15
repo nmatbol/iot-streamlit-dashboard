@@ -118,6 +118,36 @@ try:
     if isinstance(df_light, list):
         df_light = pd.concat(df_light, ignore_index=True)
 
+    # =====================================
+    # QUERY VIENTO
+    # =====================================
+
+    query_wind = f'''
+    from(bucket: "{bucket}")
+      |> range(start: -{periodo})
+      |> filter(fn: (r) => r._measurement == "weather_station")
+      |> filter(fn: (r) => r._field == "wind_speed")
+      |> sort(columns: ["_time"])
+    '''
+
+    df_wind = query_api.query_data_frame(query_wind)
+    if isinstance(df_wind, list):
+        df_wind = pd.concat(df_wind, ignore_index=True)
+
+
+    # =====================================
+    # QUERY DIRECCIÓN DEL VIENTO
+    # =====================================
+    query_dir = f'''
+    from(bucket: "{bucket}")
+      |> range(start: -{periodo})
+      |> filter(fn: (r) => r._measurement == "weather_station")
+      |> filter(fn: (r) => r._field == "wind_direction")
+    '''
+
+    df_dir = query_api.query_data_frame(query_dir)
+    if isinstance(df_dir, list):
+        df_dir = pd.concat(df_dir, ignore_index=True)
 
 
 
@@ -125,7 +155,7 @@ try:
     # COMPROBAR DATOS
     # =====================================
 
-    if not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty:
+    if not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty and not df_wind.empty and not df_dir.empty:
 
         # Seleccionamos solo columnas útiles
         df_temp = df_temp[["_time", "_value"]]
@@ -140,6 +170,15 @@ try:
 
         df_light = df_light[["_time", "_value"]]
         df_light.columns = ["Fecha", "Intensidad de la Luz"]
+
+        df_wind = df_wind[["_time", "_value"]]
+        df_wind.columns = ["Fecha", "Viento"]
+
+        df_dir = df_dir[["_value"]]
+        df_dir.columns = ["Direccion"]
+
+        dir_counts = df_dir["Direccion"].value_counts().reset_index()
+        dir_counts.columns = ["Direccion", "Count"]
 
         # =====================================
         # MÉTRICAS TEMPERATURA
@@ -299,7 +338,70 @@ try:
                 use_container_width=True
             )
 
+        # =====================================
+        # GRÁFICAS UV Y LUZ
+        # =====================================
 
+        st.divider()
+
+        col_UV, col_light = st.columns(2)
+
+        with col_UV:
+
+            st.subheader("Índice UV")
+
+            if not df_uv.empty:
+
+                uv_actual = float(df_uv["UV"].iloc[-1])
+
+                st.metric("UV actual", round(uv_actual, 2))
+
+                fig_uv = px.line(df_uv, x="Fecha", y="UV")
+                fig_uv.update_layout(template="plotly_dark", height=300)
+
+                st.plotly_chart(fig_uv, use_container_width=True)
+
+        with col_linght:
+
+            st.subheader("💡 Intensidad de la luz")
+
+            if not df_light.empty:
+
+                fig_light = px.line(df_light, x="Fecha", y="Luz")
+                fig_light.update_layout(template="plotly_dark", height=300)
+
+                st.plotly_chart(fig_light, use_container_width=True)
+
+
+        # =====================================
+        # GRÁFICAS VIENTO Y PRESIÓN
+        # =====================================
+
+        st.divider()
+
+        col_wind, col_dir = st.columns(2)
+
+        with col_wind:
+
+            st.subheader("Velocidad del viento")
+
+            if not df_wind.empty:
+
+                fig_wind = px.line(df_wind, x="Fecha", y="Viento")
+                fig_wind.update_layout(template="plotly_dark", height=300)
+
+                st.plotly_chart(fig_wind, use_container_width=True)
+
+        with col_dir:
+
+            st.subheader("Dirección del viento")
+
+            if not df_dir.empty:
+
+                fig_dir = px.pie(dir_counts, names="Direccion", values="Count")
+                fig_dir.update_layout(template="plotly_dark", height=300)
+
+                st.plotly_chart(fig_dir, use_container_width=True)
 
         # =====================================
         # TABLA
