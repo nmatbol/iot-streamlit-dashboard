@@ -167,7 +167,7 @@ try:
             if not df_light.empty:
 
                 fig = px.line(df_light, x="Fecha", y="Intensidad de la Luz")
-                st.plotly_chart(fig_light, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True)
 
         st.divider()
         # =====================================
