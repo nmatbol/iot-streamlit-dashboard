@@ -156,10 +156,10 @@ try:
         st.subheader("Presión atmosférica")
         col9, col10, col11, col12 = st.columns(4)
 
-        col9.metric("Actual", f"{presion_actual} hPa")
-        col10.metric("Máxima", f"{df_pressure['Presión'].max():.1f} hPa")
-        col11.metric("Mínima", f"{df_pressure['Presión'].min():.1f} hPa")
-        col12.metric("Media", f"{df_pressure['Presión'].mean():.1f} hPa")
+        col9.metric("Actual", f"{presion_actual} Pa")
+        col10.metric("Máxima", f"{df_pressure['Presión'].max():.1f} Pa")
+        col11.metric("Mínima", f"{df_pressure['Presión'].min():.1f} Pa")
+        col12.metric("Media", f"{df_pressure['Presión'].mean():.1f} Pa")
 
         st.divider()
 
@@ -250,7 +250,7 @@ try:
 
         fig_pressure = px.line(df_pressure, x="Fecha", y="Presión")
 
-        fig_pressure.update_layout(template="plotly_dark", height=400, yaxis_title="hPa", xaxis_title="")
+        fig_pressure.update_layout(template="plotly_dark", height=400, yaxis_title="Pa", xaxis_title="")
 
         fig_pressure.add_hline(y=1013.25, line_dash="dash", annotation_text="Presión estándar")
 
