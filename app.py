@@ -143,7 +143,7 @@ try:
         # KPIs TEMPERATURA
         # =====================================
 
-        st.subheader("emperatura")
+        st.subheader("Temperatura")
 
         col1, col2, col3, col4 = st.columns(4)
 
@@ -175,7 +175,7 @@ try:
         # KPIs HUMEDAD
         # =====================================
 
-        st.subheader("Humedad)
+        st.subheader("Humedad)"
 
         col5, col6, col7, col8 = st.columns(4)
 
