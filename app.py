@@ -141,16 +141,16 @@ try:
     # =====================================
     # QUERY DIRECCIÓN DEL VIENTO
     # =====================================
-    query_dir = f'''
-    from(bucket: "{bucket}")
-      |> range(start: -{periodo})
-      |> filter(fn: (r) => r._measurement == "weather_station")
-      |> filter(fn: (r) => r._field == "wind_direction")
-    '''
+ #   query_dir = f'''
+ #   from(bucket: "{bucket}")
+ #     |> range(start: -{periodo})
+ #     |> filter(fn: (r) => r._measurement == "weather_station")
+ #     |> filter(fn: (r) => r._field == "wind_direction")
+ #   '''
 
-    df_dir = query_api.query_data_frame(query_dir)
-    if isinstance(df_dir, list):
-        df_dir = pd.concat(df_dir, ignore_index=True)
+ #   df_dir = query_api.query_data_frame(query_dir)
+ #   if isinstance(df_dir, list):
+ #       df_dir = pd.concat(df_dir, ignore_index=True)
 
 
 
@@ -178,11 +178,11 @@ try:
         df_wind = df_wind[["_time", "_value"]]
         df_wind.columns = ["Fecha", "Viento"]
 
-        df_dir = df_dir[["_value"]]
-        df_dir.columns = ["Direccion"]
+#        df_dir = df_dir[["_value"]]
+#        df_dir.columns = ["Direccion"]
 
-        dir_counts = df_dir["Direccion"].value_counts().reset_index()
-        dir_counts.columns = ["Direccion", "Count"]
+#        dir_counts = df_dir["Direccion"].value_counts().reset_index()
+#        dir_counts.columns = ["Direccion", "Count"]
 
         # =====================================
         # MÉTRICAS TEMPERATURA
@@ -396,16 +396,16 @@ try:
 
                 st.plotly_chart(fig_wind, use_container_width=True)
 
-        with col_dir:
+         with col_dir:
 
             st.subheader("Dirección del viento")
 
-            if not df_dir.empty:
+#            if not df_dir.empty:
 
-                fig_dir = px.pie(dir_counts, names="Direccion", values="Count")
-                fig_dir.update_layout(template="plotly_dark", height=300)
+#                fig_dir = px.pie(dir_counts, names="Direccion", values="Count")
+#                fig_dir.update_layout(template="plotly_dark", height=300)
 
-                st.plotly_chart(fig_dir, use_container_width=True)
+#                st.plotly_chart(fig_dir, use_container_width=True)
 
         # =====================================
         # TABLA
