@@ -91,7 +91,7 @@ try:
     # COMPROBAR DATOS
     # =====================================
 
-    if (not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty and not df_wind.empty not df_pressure.empty):
+    if (not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty and not df_wind.empty and not df_pressure.empty):
 
         # Seleccionamos solo columnas útiles
         df_temp = df_temp[["_time", "_value"]]
