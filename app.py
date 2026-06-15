@@ -94,11 +94,12 @@ try:
     from(bucket: "{bucket}")
       |> range(start: -{periodo})
       |> filter(fn: (r) => r._measurement == "weather_station")
-      |> filter(fn: (r) => r._field == "uv_index")
+      |> filter(fn: (r) => r._field == "uv")
       |> sort(columns: ["_time"])
     '''
 
     df_uv = query_api.query_data_frame(query_uv)
+
     if isinstance(df_uv, list):
         df_uv = pd.concat(df_uv, ignore_index=True)
 
@@ -115,6 +116,7 @@ try:
     '''
 
     df_light = query_api.query_data_frame(query_light)
+
     if isinstance(df_light, list):
         df_light = pd.concat(df_light, ignore_index=True)
 
@@ -131,6 +133,7 @@ try:
     '''
 
     df_wind = query_api.query_data_frame(query_wind)
+
     if isinstance(df_wind, list):
         df_wind = pd.concat(df_wind, ignore_index=True)
 
@@ -148,6 +151,8 @@ try:
     df_dir = query_api.query_data_frame(query_dir)
     if isinstance(df_dir, list):
         df_dir = pd.concat(df_dir, ignore_index=True)
+
+
 
 
 
