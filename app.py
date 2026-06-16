@@ -14,7 +14,13 @@ st.set_page_config(
 )
 
 st.title("Estación Meteorológica Parque Natural de la Albufera de Valencia")
-st.markdown("Datos de Grupo de Redes de Computadores de la UPV")
+st.markdown("""
+    ### Sobre esta estación
+    Esta estación monitoriza en tiempo real las condiciones climatológicas del 
+    **Parque Natural de la Albufera de Valencia**. 
+    
+    Los datos son recopilados y procesados por el **Grupo de Redes de Computadores (GRC)** de la Universidad Politécnica de Valencia (UPV).
+    """)
 
 # =====================================
 # CONFIGURACIÓN INFLUXDB CLOUD
@@ -270,11 +276,11 @@ try:
         st.subheader("Ubicación de la Estación Meteorológica")
 
         # Creamos un diccionario con las coordenadas y lo convertimos a DataFrame
-        coordenadas_WS = {'lat': [39.31555876334838],  'lon': [-0.31919030831476836]}
+        coordenadas_WS = {'lat': [39.31555876334838],  'lon': [-0.31919030831476836], 'Nombre': ['Estación GRC - UPV (Albufera)']}
         df_mapa = pd.DataFrame(coordenadas_WS)
 
         # Mostramos el mapa interactivo
-        st.map(df_mapa, zoom=11, use_container_width=True)
+        st.map(df_mapa, zoom=30, use_container_width=True)
 
 
 
