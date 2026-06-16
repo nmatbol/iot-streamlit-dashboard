@@ -9,7 +9,7 @@ El trabajo está dentro del proyecto AM-DS gestionado por el **Grupo de Redes de
 
 ## 📡 El Hardware: SenseCAP S2120 LoRaWAN 8-in-1
 
-Para la recogida de datos utilizamos la estación meteorológica **SenseCAP S2120**, un dispositivo industrial todo en uno diseñado para el monitoreo ambiental bajo.
+Para la recogida de datos utilizamos la estación meteorológica **SenseCAP S2120**, un dispositivo industrial todo en uno diseñado para el monitoreo ambiental bajo condiciones climáticas severas.
 
 ### 📊 Sensores Integrados (8-en-1)
 La estación mide simultáneamente los siguientes parámetros:
@@ -25,7 +25,7 @@ La estación mide simultáneamente los siguientes parámetros:
 ### 🚀 Conectividad y Arquitectura
 * **Tecnología LoRaWAN:** Ultra bajo consumo con transmisión de largo alcance, ideal para entornos naturales como la Albufera donde no hay cobertura WiFi convencional.
 * **Alimentación Sostenible:** Funciona mediante un panel solar integrado respaldado por baterías recubiertas de alta durabilidad, lo que garantiza una autonomía ininterrumpida.
-* **Flujo de Datos:** El sensor envía los paquetes cifrados vía radio a un Gateway LoRaWAN cercano. Desde allí, los datos se parsean y se almacenan cronológicamente en nuestra base de datos **InfluxDB Cloud**>
+* **Flujo de Datos:** El sensor envía los paquetes cifrados vía radio a un Gateway LoRaWAN cercano. Desde allí, los datos se parsean y se almacenan cronológicamente en nuestra base de datos **InfluxDB Cloud** para ser finalmente consumidos por este dashboard..
 
 ---
 
