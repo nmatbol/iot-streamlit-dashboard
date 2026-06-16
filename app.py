@@ -233,7 +233,7 @@ try:
 
                 fig_rose = go.Figure()
                 fig_rose.add_trace(go.Barpolar(r=wind_counts["Frecuencia"], theta=wind_counts["Sector"], name="Viento", marker_color="deepskyblue"))
-                fig_rose.update_layout(template="plotly", height=350, polar=dict(angularaxis=dict(direction="clockwise", period=8), radialaxis=dict(showticklabels=True)), showlegend=False)
+                fig_rose.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350, polar=dict(angularaxis=dict(direction="clockwise", period=8), radialaxis=dict(showticklabels=True)), showlegend=False)
                 st.plotly_chart(fig_rose, use_container_width=True)
             else:
                 st.info("No hay datos suficientes para generar la rosa de los vientos.")
