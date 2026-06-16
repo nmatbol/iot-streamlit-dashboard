@@ -274,9 +274,11 @@ try:
         # MAPA DE LA UBICACIÓN DE LA WS
         # =====================================
         st.subheader("Ubicación de la Estación Meteorológica")
+        lat_WS = 39.31555876334838
+        lon_WS = -0.31919030831476836
 
         # Creamos un diccionario con las coordenadas y lo convertimos a DataFrame
-        coordenadas_WS = {'lat': [39.31555876334838],  'lon': [-0.31919030831476836], 'Nombre': ['Estación GRC - UPV (Albufera)']}
+        coordenadas_WS = {'lat': lat_WS,  'lon': lon_WS, 'Nombre': ['Estación GRC - UPV (Albufera)']}
         df_mapa = pd.DataFrame(coordenadas_WS)
 
         # Mostramos el mapa interactivo
@@ -287,7 +289,7 @@ try:
         fig_mapa = px.scatter_mapbox(df_mapa, lat="lat", lon="lon", hover_name="Nombre", color_discrete_sequence=["#ff4b4b"], size_max=15, zoom=13)
 
         # Estilo y color del mapa
-        fig_mapa.update_layout(mapbox_style="carto-positron", mapbox=dict(center=dict(lat="lat", lon="lon"), ), margin={"r":0,"t":0,"l":0,"b":0}, height=400)
+        fig_mapa.update_layout(mapbox_style="carto-positron", mapbox=dict(center=dict(lat=lat_WS, lon=lon_WS), ), margin={"r":0,"t":0,"l":0,"b":0}, height=400)
 
         st.plotly_chart(fig_mapa, use_container_width=True)
 
