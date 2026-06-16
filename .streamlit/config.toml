@@ -1,6 +1,6 @@
 [theme]
-primaryColor = "#00bfff"          # Color de acento (Azul cielo profundo, a juego con tu viento)
-backgroundColor = "#0e1117"       # Fondo principal (Gris muy oscuro)
+primaryColor = "#00bfff"          # Color de acento (Azul cielo)
+backgroundColor = "#0e1117"       # Fondo principal (Gris oscuro)
 secondaryBackgroundColor = "#1f2937" # Fondo de la barra lateral y tarjetas
-textColor = "#ffffff"             # Color del texto principal
+textColor = "#ffffff"             # Color del texto principal (Blanco)
 font = "sans serif"

@@ -167,7 +167,7 @@ try:
             st.subheader("Evolución de la temperatura")
             if not df_temp.empty:
                 fig = px.line(df_temp, x="Fecha", y="Temperatura")
-                fig.update_layout(template="plotly_dark", height=350)
+                fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350)
                 st.plotly_chart(fig, use_container_width=True)
             else:
                 st.info("No hay datos de temperatura.")
@@ -176,7 +176,7 @@ try:
             st.subheader("Evolución de la humedad")
             if not df_hum.empty:
                 fig = px.line(df_hum, x="Fecha", y="Humedad")
-                fig.update_layout(template="plotly_dark", height=350)
+                fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350)
                 st.plotly_chart(fig, use_container_width=True)
             else:
                 st.info("No hay datos de humedad.")
@@ -194,7 +194,7 @@ try:
             if not df_uv.empty:
                 st.metric("UV actual", round(float(df_uv["Índice UV"].iloc[-1]), 2))
                 fig = px.line(df_uv, x="Fecha", y="Índice UV")
-                fig.update_layout(template="plotly_dark", height=300)
+                fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=300)
                 st.plotly_chart(fig, use_container_width=True)
             else:
                 st.info("No hay datos de índice UV.")
@@ -203,7 +203,7 @@ try:
             st.subheader("Intensidad de la Luz")
             if not df_light.empty:
                 fig = px.line(df_light, x="Fecha", y="Intensidad de la Luz")
-                fig.update_layout(template="plotly_dark", height=350)
+                fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350)
                 st.plotly_chart(fig, use_container_width=True)
             else:
                 st.info("No hay datos de intensidad de luz.")
@@ -219,7 +219,7 @@ try:
             st.subheader("Histórico Dirección del Viento (Grados)")
             if not df_wind.empty:
                 fig_wind = px.line(df_wind, x="Fecha", y="Direccion")
-                fig_wind.update_layout(template="plotly_dark", height=350)
+                fig_wind.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350)
                 st.plotly_chart(fig_wind, use_container_width=True)
             else:
                 st.info("No hay datos de la dirección del viento.")
@@ -233,7 +233,7 @@ try:
 
                 fig_rose = go.Figure()
                 fig_rose.add_trace(go.Barpolar(r=wind_counts["Frecuencia"], theta=wind_counts["Sector"], name="Viento", marker_color="deepskyblue"))
-                fig_rose.update_layout(template="plotly_dark", height=350, polar=dict(angularaxis=dict(direction="clockwise", period=8), radialaxis=dict(showticklabels=True)), showlegend=False)
+                fig_rose.update_layout(template="plotly", height=350, polar=dict(angularaxis=dict(direction="clockwise", period=8), radialaxis=dict(showticklabels=True)), showlegend=False)
                 st.plotly_chart(fig_rose, use_container_width=True)
             else:
                 st.info("No hay datos suficientes para generar la rosa de los vientos.")
@@ -249,7 +249,7 @@ try:
             st.subheader("Presión atmosférica")
             if not df_pressure.empty:
                 fig_pressure = px.line(df_pressure, x="Fecha", y="Presión")
-                fig_pressure.update_layout(template="plotly_dark", height=350, yaxis_title="Pa", xaxis_title="")
+                fig_pressure.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350, yaxis_title="Pa", xaxis_title="")
                 fig_pressure.add_hline(y=101325, line_dash="dash", annotation_text="Presión estándar (Pa)") # Ojo: 1013.25 son hPa, en Pa son 101325.
                 st.plotly_chart(fig_pressure, use_container_width=True)
             else:
@@ -259,7 +259,7 @@ try:
             st.subheader("Precipitación")
             if not df_rain.empty:
                 fig_rain = px.bar(df_rain, x="Fecha", y="Lluvia")
-                fig_rain.update_layout(template="plotly_dark", height=350, xaxis_title="", yaxis_title="mm")
+                fig_rain.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350, xaxis_title="", yaxis_title="mm")
                 st.plotly_chart(fig_rain, use_container_width=True)
             else:
                 st.info("No hay datos de precipitación.")
