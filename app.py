@@ -111,17 +111,8 @@ try:
         # =====================================
     if not df_wind.empty:
         df_wind = df_wind[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Direccion"})
-
         # Convertir grados → sectores
         df_wind["Sector"] = df_wind["Direccion"].apply(wind_deg_to_dir)
-
-        wind_counts = (df_wind.groupby("Sector").size().reset_index(name="Frecuencia"))
-
-        wind_counts.rename(columns={"Sector": "Direccion"}, inplace=True)
-
-        wind_counts["Direccion"] = pd.Categorical(wind_counts["Direccion"], categories=order, ordered=True)
-
-        wind_counts = wind_counts.sort_values("Direccion")
 
         # =====================================
         # MÉTRICAS PRINCIPALES
