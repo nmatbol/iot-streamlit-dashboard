@@ -83,7 +83,6 @@ try:
     df_uv = run_query("uv")
     df_light = run_query("light")
     df_wind = run_query("wind_direction")
-    #df_dir = run_query("wind_direction")
     df_pressure = run_query("pressure")
     df_rain = run_query("rain")
 
@@ -92,33 +91,26 @@ try:
     # COMPROBAR DATOS
     # =====================================
 
-    if (not df_temp.empty and not df_hum.empty and not df_uv.empty and not df_light.empty and not df_wind.empty and not df_pressure.empty and not df_rain.empty):
-
+    if not df_temp.empty:
         # Seleccionamos solo columnas útiles
-        df_temp = df_temp[["_time", "_value"]]
-        df_temp.columns = ["Fecha", "Temperatura"]
+        df_temp = df_temp[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Temperatura"})
+    if not df_hum.empty:
+        df_hum = df_hum[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Humedad"})
+    if not df_uv.empty:
+        df_uv = df_uv[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Índice UV"})
+    if not df_light.empty:
+        df_light = df_light[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Intensidad de la Luz"})
+    if not df_pressure.empty:
+        df_pressure = df_pressure[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Presión"})
+    if not df_rain.empty:
+        df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Lluvia"})
 
-        df_hum = df_hum[["_time", "_value"]]
-        df_hum.columns = ["Fecha", "Humedad"]
-
-        df_uv = df_uv[["_time", "_value"]]
-        df_uv.columns = ["Fecha", "Índice UV"]
-
-        df_light = df_light[["_time", "_value"]]
-        df_light.columns = ["Fecha", "Intensidad de la Luz"]
-
-        df_pressure = df_pressure[["_time", "_value"]]
-        df_pressure.columns = ["Fecha", "Presión"]
-
-        df_rain = df_rain[["_time", "_value"]]
-        df_rain.columns = ["Fecha", "Lluvia"]
 
         # =====================================
         # DIRECCIÓN DEL VIENTO
         # =====================================
-
-        df_wind = df_wind[["_time", "_value"]]
-        df_wind.columns = ["Fecha", "Direccion"]
+    if not df_wind.empty:
+        df_wind = df_wind[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Direccion"})
 
         # Convertir grados → sectores
         df_wind["Sector"] = df_wind["Direccion"].apply(wind_deg_to_dir)
@@ -127,14 +119,12 @@ try:
 
         wind_counts.rename(columns={"Sector": "Direccion"}, inplace=True)
 
-        order = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] # Orden para la rosa de los vientos
-
         wind_counts["Direccion"] = pd.Categorical(wind_counts["Direccion"], categories=order, ordered=True)
 
         wind_counts = wind_counts.sort_values("Direccion")
 
         # =====================================
-        # MÉTRICA
+        # MÉTRICAS PRINCIPALES
         # =====================================
 
         temperatura_actual = round(float(df_temp["Temperatura"].iloc[-1]), 1)
@@ -183,19 +173,22 @@ try:
         col_temp, col_hum = st.columns(2)
 
         with col_temp:
-
             st.subheader("Evolución de la temperatura")
-            fig = px.line(df_temp, x="Fecha", y="Temperatura")
-            fig.update_layout(template="plotly_dark", height=450)
-            st.plotly_chart(fig, use_container_width=True)
-
+            if not df_temp.empty:
+                fig = px.line(df_temp, x="Fecha", y="Temperatura")
+                fig.update_layout(template="plotly_dark", height=350)
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("No hay datos de temperatura.")
 
         with col_hum:
-
             st.subheader("Evolución de la humedad")
-            fig = px.line(df_hum, x="Fecha", y="Humedad")
-            fig.update_layout(template="plotly_dark", height=450)
-            st.plotly_chart(fig, use_container_width=True)
+            if not df_hum.empty:
+                fig = px.line(df_hum, x="Fecha", y="Humedad")
+                fig.update_layout(template="plotly_dark", height=350)
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("No hay datos de humedad.")
 
         st.divider()
 
@@ -206,83 +199,79 @@ try:
         col_uv, col_light = st.columns(2)
 
         with col_uv:
-
             st.subheader("Índice UV")
-
             if not df_uv.empty:
-
-                uv_actual = float(df_uv["Índice UV"].iloc[-1])
-
-                st.metric("UV actual", round(uv_actual, 2))
-
+                st.metric("UV actual", round(float(df_uv["Índice UV"].iloc[-1]), 2))
                 fig = px.line(df_uv, x="Fecha", y="Índice UV")
+                fig.update_layout(template="plotly_dark", height=300)
                 st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("No hay datos de índice UV.")
 
         with col_light:
-
             st.subheader("Intensidad de la Luz")
-
             if not df_light.empty:
-
                 fig = px.line(df_light, x="Fecha", y="Intensidad de la Luz")
+                fig.update_layout(template="plotly_dark", height=350)
                 st.plotly_chart(fig, use_container_width=True)
-
-        st.divider()
-        # =====================================
-        # GRÁFICA VIENTO
-        # =====================================
-        st.subheader("Dirección del viento (grados)")
-
-        fig_wind = px.line(df_wind, x="Fecha", y="Direccion")
-
-        fig_wind.update_layout(template="plotly_dark", height=350)
-
-        st.plotly_chart(fig_wind, use_container_width=True)
-
-
-        # =====================================
-        # ROSA DE LOS VIENTOS
-        # =====================================
-
-        st.subheader("Rosa de los vientos")
-
-        fig = go.Figure()
-
-        fig.add_trace(go.Barpolar(r=wind_counts["Frecuencia"], theta=wind_counts["Direccion"], name="Viento", marker_color="deepskyblue"))
-
-        fig.update_layout(template="plotly_dark", polar=dict(angularaxis=dict(direction="clockwise"),radialaxis=dict(showticklabels=True)), showlegend=False)
-
-        st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("No hay datos de intensidad de luz.")
 
         st.divider()
 
+        # =========================================
+        # GRÁFICAS DEL VIENTO Y ROSA DE LOS VIENTOS
+        # =========================================
+        col_v1, col_v2 = st.columns(2)
+
+        with col_v1:
+            st.subheader("Histórico Dirección del Viento (Grados)")
+            if not df_wind.empty:
+                fig_wind = px.line(df_wind, x="Fecha", y="Direccion")
+                fig_wind.update_layout(template="plotly_dark", height=350)
+                st.plotly_chart(fig_wind, use_container_width=True)
+            else:
+                st.info("No hay datos de la dirección del viento.")
+
+        with col_v2:
+            st.subheader("Rosa de los vientos")
+            if not df_wind.empty and not df_wind["Sector"].dropna().empty:
+                # Reconstrucción robusta de frecuencias para la Rosa de los Vientos
+                order = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+                wind_counts = df_wind.groupby("Sector").size().reindex(order, fill_value=0).reset_index(name="Frecuencia")
+
+                fig_rose = go.Figure()
+                fig_rose.add_trace(go.Barpolar(r=wind_counts["Frecuencia"], theta=wind_counts["Sector"], name="Viento", marker_color="deepskyblue"))
+                fig_rose.update_layout(template="plotly_dark", height=350, polar=dict(angularaxis=dict(direction="clockwise", period=8), radialaxis=dict(showticklabels=True)), showlegend=False)
+                st.plotly_chart(fig_rose, use_container_width=True)
+            else:
+                st.info("No hay datos suficientes para generar la rosa de los vientos.")
+
+        st.divider()
+
         # =====================================
-        # GRÁFICA PRESIÓN
+        # GRÁFICAS PRESIÓN Y PRECIPITACIÓN
         # =====================================
-        st.subheader("Presión atmosférica")
+        col_p, col_r = st.columns(2)
 
-        fig_pressure = px.line(df_pressure, x="Fecha", y="Presión")
+        with col_p:
+            st.subheader("Presión atmosférica")
+            if not df_pressure.empty:
+                fig_pressure = px.line(df_pressure, x="Fecha", y="Presión")
+                fig_pressure.update_layout(template="plotly_dark", height=350, yaxis_title="Pa", xaxis_title="")
+                fig_pressure.add_hline(y=101325, line_dash="dash", annotation_text="Presión estándar (Pa)") # Ojo: 1013.25 son hPa, en Pa son 101325.
+                st.plotly_chart(fig_pressure, use_container_width=True)
+            else:
+                st.info("No hay datos de presión.")
 
-        fig_pressure.update_layout(template="plotly_dark", height=400, yaxis_title="Pa", xaxis_title="")
-
-        fig_pressure.add_hline(y=1013.25, line_dash="dash", annotation_text="Presión estándar")
-
-        st.plotly_chart(fig_pressure, use_container_width=True)
-
-        # =====================================
-        # GRÁFICA PRECIPITACIÓN
-        # =====================================
-        st.subheader("Precipitación")
-
-        fig_rain = px.bar(df_rain, x="Fecha", y="Lluvia")
-
-        fig_rain.update_layout(template="plotly_dark", height=400, xaxis_title="", yaxis_title="mm")
-
-        st.plotly_chart(fig_rain, use_container_width=True)
-
-
-    else:
-        st.warning("No hay datos disponibles para el periodo seleccionado.")
+        with col_r:
+            st.subheader("Precipitación")
+            if not df_rain.empty:
+                fig_rain = px.bar(df_rain, x="Fecha", y="Lluvia")
+                fig_rain.update_layout(template="plotly_dark", height=350, xaxis_title="", yaxis_title="mm")
+                st.plotly_chart(fig_rain, use_container_width=True)
+            else:
+                st.info("No hay datos de precipitación.")
 
 except Exception as e:
     st.error(f"Error al consultar InfluxDB: {e}")
