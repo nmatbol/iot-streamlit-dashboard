@@ -280,7 +280,16 @@ try:
         df_mapa = pd.DataFrame(coordenadas_WS)
 
         # Mostramos el mapa interactivo
-        st.map(df_mapa, zoom=30, use_container_width=True)
+        #st.map(df_mapa, zoom=13, use_container_width=True)
+
+
+        # Mapa interactivo con Plotly Express
+        fig_mapa = px.scatter_mapbox(df_mapa, lat="lat", lon="lon", hover_name="Nombre", color_discrete_sequence=["#ff4b4b"], size_max=15, zoom=13)
+
+        # Estilo y color del mapa
+        fig_mapa.update_layout(mapbox_style="carto-positron", mapbox=dict(center=dict(lat="lat", lon="lon"), ), margin={"r":0,"t":0,"l":0,"b":0}, height=400)
+
+       st.plotly_chart(fig_mapa, use_container_width=True)
 
 
 
