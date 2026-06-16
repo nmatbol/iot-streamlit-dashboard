@@ -9,7 +9,7 @@ El trabajo está dentro del proyecto AM-DS gestionado por el **Grupo de Redes de
 
 ## 📡 El Hardware: SenseCAP S2120 LoRaWAN 8-in-1
 
-Para la recogida de datos utilizamos la estación meteorológica **SenseCAP S2120 (Seeed Studio)**, un dispositivo industrial todo en uno diseñado para la agricultura de precisión y el monitoreo ambiental bajo >
+Para la recogida de datos utilizamos la estación meteorológica **SenseCAP S2120**, un dispositivo industrial todo en uno diseñado para el monitoreo ambiental bajo.
 
 ### 📊 Sensores Integrados (8-en-1)
 La estación mide simultáneamente los siguientes parámetros:
