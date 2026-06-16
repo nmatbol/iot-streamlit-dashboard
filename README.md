@@ -33,6 +33,6 @@ La estación mide simultáneamente los siguientes parámetros:
 * **Python 3.10+**
 * **Streamlit:** Para la interfaz web rápida e interactiva.
 * **InfluxDB Client:** Conexión directa y consultas optimizadas mediante Flux.
-* **Plotly:** Gráficos dinámicos, incluyendo mapas e histogramas polares para la rosa de los vientos.# iot-streamlit-dashboard
+* **Plotly:** Gráficos dinámicos, incluyendo mapas e histogramas polares para la rosa de los vientos.
 
 ![Vista del Dashboard](img/newplot.png)
