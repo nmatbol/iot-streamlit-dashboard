@@ -289,7 +289,7 @@ try:
         # Estilo y color del mapa
         fig_mapa.update_layout(mapbox_style="carto-positron", mapbox=dict(center=dict(lat="lat", lon="lon"), ), margin={"r":0,"t":0,"l":0,"b":0}, height=400)
 
-       st.plotly_chart(fig_mapa, use_container_width=True)
+        st.plotly_chart(fig_mapa, use_container_width=True)
 
 
 
