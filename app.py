@@ -165,8 +165,8 @@ try:
 
         col13.metric("Actual", f"{lluvia_actual} mm")
         col14.metric("Máxima", f"{df_rain_total['Lluvia Total'].max():.1f} mm")
-        col15.metric("Mínima", f"{df_rain_total['Lluvia Total'].min():.1f} mm")
-        col16.metric("Media", f"{df_rain_total['Lluvia Total'].mean():.1f} mm")
+        col15.metric("Mínima", f"{df_rain['Lluvia'].min():.1f} mm")
+        col16.metric("Media", f"{df_rain['Lluvia'].mean():.1f} mm")
 
         st.divider()
 
