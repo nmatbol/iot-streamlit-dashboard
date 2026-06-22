@@ -36,4 +36,3 @@ La estación mide simultáneamente los siguientes parámetros:
 * **Plotly:** Gráficos dinámicos, incluyendo mapas e histogramas polares para la rosa de los vientos.
 
 ![Vista del Dashboard](img/newplot.png)
->>>>>>> 9d4edb2cddc74cdcf75a0ef89899670ca37fbb69
