@@ -109,8 +109,12 @@ try:
     if not df_pressure.empty:
         df_pressure = df_pressure[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Presión"})
     if not df_rain.empty:
-        df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Lluvia"})
+        #df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Lluvia"})
+        df_rain = df_rain[["_time", "_value"]]
+        df_rain.columns = ["Fecha", "Lluvia"]
 
+        df_rain["Fecha"] = pd.to_datetime(df_rain["Fecha"])
+        df_rain["Lluvia"] = pd.to_numeric(df_rain["Lluvia"], errors="coerce")
 
         # =====================================
         # DIRECCIÓN DEL VIENTO
@@ -256,7 +260,7 @@ try:
             if not df_pressure.empty:
                 fig_pressure = px.line(df_pressure, x="Fecha", y="Presión")
                 fig_pressure.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350, yaxis_title="Pa", xaxis_title="")
-                fig_pressure.add_hline(y=101325, line_dash="dash", annotation_text="Presión estándar (Pa)") # Ojo: 1013.25 son hPa, en Pa son 101325.
+                fig_pressure.add_hline(y=101325, line_dash="dash", annotation_text="Presión estándar (Pa)") # 1013.25hPa = 101325Pa
                 st.plotly_chart(fig_pressure, use_container_width=True)
             else:
                 st.info("No hay datos de presión.")
@@ -265,6 +269,7 @@ try:
             st.subheader("Precipitación")
             if not df_rain.empty:
                 fig_rain = px.bar(df_rain, x="Fecha", y="Lluvia")
+                fig_rain.update_traces(width=86400000)  # 1 día en milisegundos
                 fig_rain.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", height=350, xaxis_title="", yaxis_title="mm")
                 st.plotly_chart(fig_rain, use_container_width=True)
             else:
