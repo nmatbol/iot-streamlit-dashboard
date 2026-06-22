@@ -114,7 +114,7 @@ try:
     if not df_rain.empty:
         df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Lluvia"})
     if not df_rain_total.empty:
-         df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "LluviaTotal"})
+         df_rain_total = df_rain_total[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "LluviaTotal"})
 
         # =====================================
         # DIRECCIÓN DEL VIENTO
