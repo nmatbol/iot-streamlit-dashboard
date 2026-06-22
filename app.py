@@ -117,7 +117,7 @@ try:
         df_rain.columns = ["Fecha", "Lluvia"]
     if not df_rain_total.empty:
         df_rain_total = df_rain_total[["_time", "_value"]]
-        df_rain_total.columns = ["Fecha", "Lluvia"]
+        df_rain_total.columns = ["Fecha", "Lluvia Total"]
 
         # =====================================
         # DIRECCIÓN DEL VIENTO
@@ -164,9 +164,9 @@ try:
         col13, col14, col15, col16 = st.columns(4)
 
         col13.metric("Actual", f"{lluvia_actual} mm")
-        col14.metric("Máxima", f"{df_rain['Lluvia'].max():.1f} mm")
-        col15.metric("Mínima", f"{df_rain['Lluvia'].min():.1f} mm")
-        col16.metric("Media", f"{df_rain_total['Lluvia'].mean():.1f} mm")
+        col14.metric("Máxima", f"{df_rain_total['Lluvia Total'].max():.1f} mm")
+        col15.metric("Mínima", f"{df_rain_total['Lluvia Total'].min():.1f} mm")
+        col16.metric("Media", f"{df_rain_total['Lluvia Total'].mean():.1f} mm")
 
         st.divider()
 
