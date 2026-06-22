@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 =======
 # iot-streamlit-dashboard
 # 🌦️ Estación Meteorológica Parque Natural de la Albufera
