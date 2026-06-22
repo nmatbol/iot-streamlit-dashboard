@@ -113,8 +113,6 @@ try:
         df_rain = df_rain[["_time", "_value"]]
         df_rain.columns = ["Fecha", "Lluvia"]
 
-        df_rain["Fecha"] = pd.to_datetime(df_rain["Fecha"])
-        df_rain["Lluvia"] = pd.to_numeric(df_rain["Lluvia"], errors="coerce")
 
         # =====================================
         # DIRECCIÓN DEL VIENTO
@@ -274,6 +272,8 @@ try:
                 st.plotly_chart(fig_rain, use_container_width=True)
             else:
                 st.info("No hay datos de precipitación.")
+
+        st.divider()
 
         # =====================================
         # MAPA DE LA UBICACIÓN DE LA WS
