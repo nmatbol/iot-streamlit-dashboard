@@ -18,7 +18,7 @@ st.markdown("""
     ### Sobre esta estación
     Esta estación monitoriza en tiempo real las condiciones climatológicas del 
     **Parque Natural de la Albufera de Valencia**. 
-    
+
     Los datos son recopilados y procesados por el **Grupo de Redes de Computadores (GRC)** de la Universidad Politécnica de Valencia (UPV).
     """)
 
@@ -112,12 +112,9 @@ try:
     if not df_pressure.empty:
         df_pressure = df_pressure[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Presión"})
     if not df_rain.empty:
-        #df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Lluvia"})
-        df_rain = df_rain[["_time", "_value"]]
-        df_rain.columns = ["Fecha", "Lluvia"]
+        df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Lluvia"})
     if not df_rain_total.empty:
-        df_rain_total = df_rain_total[["_time", "_value"]]
-        df_rain_total.columns = ["Fecha", "Lluvia Total"]
+         df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "LluviaTotal"})
 
         # =====================================
         # DIRECCIÓN DEL VIENTO
@@ -164,7 +161,7 @@ try:
         col13, col14, col15, col16 = st.columns(4)
 
         col13.metric("Actual", f"{lluvia_actual} mm")
-        col14.metric("Máxima", f"{df_rain_total['Lluvia Total'].max():.1f} mm")
+        col14.metric("Máxima", f"{df_rain['Lluvia'].max():.1f} mm")
         col15.metric("Mínima", f"{df_rain['Lluvia'].min():.1f} mm")
         col16.metric("Media", f"{df_rain['Lluvia'].mean():.1f} mm")
 
