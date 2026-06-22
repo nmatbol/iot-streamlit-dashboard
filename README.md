@@ -1,5 +1,4 @@
 
-# iot-streamlit-dashboard
 # 🌦️ Estación Meteorológica Parque Natural de la Albufera
 
 Este repositorio contiene el código del dashboard interactivo (desarrollado con **Streamlit**, **InfluxDB** y **Plotly**) para visualizar en tiempo real los datos climatológicos recogidos en el Parque Natural>
