@@ -91,6 +91,9 @@ try:
     df_wind = run_query("wind_direction")
     df_pressure = run_query("pressure")
     df_rain = run_query("rain")
+    df_rain_total = run_query("rain_total")
+
+
 
 
     # =====================================
@@ -112,7 +115,9 @@ try:
         #df_rain = df_rain[["_time", "_value"]].rename(columns={"_time": "Fecha", "_value": "Lluvia"})
         df_rain = df_rain[["_time", "_value"]]
         df_rain.columns = ["Fecha", "Lluvia"]
-
+    if not df_rain_total.empty:
+        df_rain_total = df_rain_total[["_time", "_value"]]
+        df_rain_total.columns = ["Fecha", "Lluvia"]
 
         # =====================================
         # DIRECCIÓN DEL VIENTO
@@ -161,7 +166,7 @@ try:
         col13.metric("Actual", f"{lluvia_actual} mm")
         col14.metric("Máxima", f"{df_rain['Lluvia'].max():.1f} mm")
         col15.metric("Mínima", f"{df_rain['Lluvia'].min():.1f} mm")
-        col16.metric("Media", f"{df_rain['Lluvia'].mean():.1f} mm")
+        col16.metric("Media", f"{df_rain_total['Lluvia'].mean():.1f} mm")
 
         st.divider()
 
