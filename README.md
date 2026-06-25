@@ -25,7 +25,7 @@ La estación mide simultáneamente los siguientes parámetros:
 ### 🚀 Conectividad y Arquitectura
 * **Tecnología LoRaWAN:** Ultra bajo consumo con transmisión de largo alcance, ideal para entornos naturales como la Albufera donde no hay cobertura WiFi convencional.
 * **Alimentación Sostenible:** Funciona mediante un panel solar integrado respaldado por baterías recubiertas de alta durabilidad, lo que garantiza una autonomía ininterrumpida.
-* **Flujo de Datos:** El sensor envía los paquetes cifrados vía radio a un Gateway LoRaWAN cercano. Desde allí, los datos se parsean y se almacenan cronológicamente en nuestra base de datos **InfluxDB Cloud** para ser finalmente consumidos por este dashboard..
+* **Flujo de Datos:** El sensor envía los paquetes cifrados vía radio a un Gateway LoRaWAN cercano. Desde allí, los datos se parsean y se almacenan cronológicamente en nuestra base de datos **InfluxDB Cloud** para ser finalmente consumidos por este dashboard.
 
 ---
 
